@@ -15,6 +15,7 @@ if __name__ == '__main__':
     num_node = 50  # graph the number of nodes
     min_dist = 0.5  # minimum distance between two nodes
 
+
     #initialize
     node_pnt = np.ndarray((num_node, 2))
 
@@ -24,6 +25,7 @@ if __name__ == '__main__':
         pnt = np.multiply(np.random.rand(1, 2),[sizex, sizey]) + [minx, miny]
         y = spatial.distance.cdist(node_pnt[0:idx, :], pnt)
         if min(y) > min_dist:
+            # if check whether a point is not occupied
             node_pnt[idx:idx+1, :] = pnt
             idx = idx+1
 
@@ -31,7 +33,7 @@ if __name__ == '__main__':
             print("end")
             break
 
-    print(idx)
+    print(node_pnt)
 
 
 
