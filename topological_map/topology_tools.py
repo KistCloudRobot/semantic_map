@@ -22,7 +22,7 @@ class TopoMap():
         self.num_room = len(self.room_classes)
 
         # scoring function
-        self.CONST_DIST = 10
+        self.CONST_DIST = 2
         self.CONST_CONF = 2
 
         # initialize
@@ -59,7 +59,7 @@ class TopoMap():
         distmat = np.ndarray((self.num_node, self.num_node))
         for ii in range(0, self.num_node):
             for jj in range(ii, self.num_node):
-                dist = np.sum((node_pnt[ii, :]-node_pnt[jj, :])**2)
+                dist = np.sqrt(np.sum((node_pnt[ii, :]-node_pnt[jj, :])**2))
                 distmat[ii, jj] = dist
                 distmat[jj, ii] = dist
 
@@ -131,7 +131,7 @@ class TopoMap():
         self.num_obj = len(self.obj_node)
 
 
-    def draw_map(self, draw_room):
+    def draw_map(self, flag_draw_room):
         print("Drawing")
         # draw topological map
         for ii in range(0, self.num_node):
@@ -146,7 +146,7 @@ class TopoMap():
 
         # draw object
         for key, val in self.obj_node.items():
-            plt.text(self.nodes[val,0]+0.1,self.nodes[val,1]+0.1,key)
+            plt.text(self.nodes[val,0]+0.1,self.nodes[val,1]+0.1,self.obj_class[key])
 
         # test - distance
         #for ii in range(0, self.num_node):
@@ -156,13 +156,15 @@ class TopoMap():
         #    plt.title(str(ii))
         #    plt.pause(5)
 
-        if draw_room:
+        if flag_draw_room:
+            color_scale = np.max(self.prob_node_room)-np.min(self.prob_node_room)
+            color_offset = np.min(self.prob_node_room)
             for ii in range(0, self.num_room):
                 for jj in range(0,self.num_node):
-                    linecolor = (self.prob_node_room[jj,ii],0,0)
+                    linecolor = ((self.prob_node_room[jj,ii]-color_offset)/color_scale,0,0)
                     plt.setp(plt_node[jj], mfc=linecolor, c=linecolor)
                 plt.title(self.room_classes[ii])
-                plt.pause(10)
+                plt.pause(5)
 
 
         plt.show()
@@ -177,14 +179,10 @@ class TopoMap():
                 print(self.room_classes[jj]+" "+self.obj_class[ii])
                 prob_room[:, jj:jj+1] = self.fcn_scoring(self.dist_mat[:,self.obj_node[ii]:self.obj_node[ii]+1],
                                                      self.score_room_obj[(self.room_classes[jj],self.obj_class[ii])])
-            prob = np.multiply(prob, prob_room)
-
-            for kk in range(0, self.num_node):
-                plt.plot(prob_room[kk, :])
+            #prob = np.multiply(prob, prob_room)
+            prob = prob + prob_room
 
         # normalize
-        for ii in range(0, self.num_node):
-            plt.plot(self.prob[ii,:])
         self.prob_node_room = np.copy(np.divide(prob, np.tile(np.sum(prob, axis=1, keepdims=True), (1, self.num_room))))
         print("end:update node_class")
 
@@ -194,17 +192,16 @@ class TopoMap():
         return score
 
 
-
 if __name__ == '__main__':
     topomap = TopoMap()
 
-    obj_pose = {0:[1,1], 1:[1,1.5], 2:[0.5,0.5], 3:[3,3], 4:[4,3.5], 5:[8,8]}
-    obj_class = {0:"fridge", 1:"table", 2:"food", 3:"sofa", 4: "coffee_table", 5: "balls"} # ID -class
+    obj_pose = {0:[1,1], 1:[1,1.5], 2:[0.5,0.5], 3:[3,3], 4:[4,3.5], 5:[8,8],
+                6: [2,7], 7:[2.5,6] , 8:[8,2], 9:[2.5,3]}
+    obj_class = {0:"fridge", 1:"table", 2:"food", 3:"sofa", 4: "coffee_table", 5: "balls",
+                 6: "closet", 7: "lamp", 8:"car", 9:"tv"} # ID -class
     topomap.update_obj(obj_pose, obj_class)
     topomap.update_nodeclass()
-    topomap.draw_map(draw_room = True)
-
-
+    topomap.draw_map(flag_draw_room = True)
 
     print("end?")
     #fig=spatial.voronoi_plot_2d(vor)
