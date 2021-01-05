@@ -1,0 +1,23 @@
+#Configuation for robot odometry EKF
+#http://docs.ros.org/melodic/api/robot_localization/html/state_estimation_nodes.html?highlight=ekf_localization_node
+frequency: 50
+
+odom0: /jackal_velocity_controller/odom
+odom0_config: [false, false, false, # X,Y,Z
+               false, false, false, # roll,pitch,yaw
+               true, true, true,    # X',Y',Z'
+               false, false, true,  # roll',pitch',yaw'
+               false, false, false] # X",Y",Z"
+odom0_differential: false
+
+imu0: /imu/data
+imu0_config: [false, false, false,
+              false, false, true,
+              false, false, false,
+              false, false, true,
+              true, true, false]
+imu0_differential: false
+
+odom_frame: odom
+base_link_frame: base_link
+world_frame: odom

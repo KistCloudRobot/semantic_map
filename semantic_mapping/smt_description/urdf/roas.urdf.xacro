@@ -1,0 +1,89 @@
+<?xml version="1.0"?>
+
+<robot  xmlns:xacro="http://www.ros.org/wiki/xacro">
+
+  <xacro:property name="PI" value="3.1415926535897931"/>
+
+  <xacro:include filename="$(find smt_description)/urdf/accessories/vlp16.urdf.xacro"/>
+
+  <link name="top_structure">
+    <visual>
+      <origin xyz="-0.015 0 0" rpy="${PI/2} 0 -${PI/2}"/>
+      <geometry>
+        <mesh filename="package://smt_description/meshes/top_structure.stl" scale="0.001 0.001 0.001"/>
+      </geometry>
+      <material name="dark gray">
+        <color rgba="0.2 0.2 0.2 1"/>
+      </material>
+    </visual>
+    <collision>
+      <origin xyz="-0.015 0 0" rpy="${PI/2} 0 -${PI/2}"/>
+      <geometry>
+        <mesh filename="package://smt_description/meshes/top_structure.stl" scale="0.001 0.001 0.001"/>
+      </geometry>
+    </collision>
+  </link>
+  <gazebo reference="top_structure">
+    <material>Gazebo/Grey</material>
+  </gazebo>
+
+  <joint name="top_structure_joint" type="fixed">
+    <parent link="mid_mount"/>
+    <child link="top_structure"/>
+    <origin xyz="-0.06 0 0" rpy="0 0 0"/>
+  </joint>
+
+  <!-- Velodyne -->
+  <include filename="$(find smt_description)/urdf/accessories/vlp16.urdf.xacro"/>
+  <sensor_vlp16 parent="top_structure" name="velodyne" topic="/velodyne_points" hz="10">
+		<origin xyz="0 0 0.7" rpy="0 0 0" />
+	</sensor_vlp16>
+
+  <link name="azure_kinect_mount">
+    <visual>
+      <origin xyz="0.04 0 0" rpy="${PI/2} 0 ${PI/2}"/>
+      <geometry>
+        <mesh filename="package://smt_description/meshes/azure_kinect.stl" scale="0.001 0.001 0.001"/>
+      </geometry>
+      <material name="dark gray">
+        <color rgba="0.2 0.2 0.2 1"/>
+      </material>
+    </visual>
+    <collision>
+      <origin xyz="0 0 0" rpy="${PI/2} 0 -${PI/2}"/>
+      <geometry>
+        <mesh filename="package://smt_description/meshes/azure_kinect.stl" scale="0.001 0.001 0.001"/>
+      </geometry>
+    </collision>
+  </link>
+  <gazebo reference="azure_kinect_mount">
+    <material>Gazebo/DarkGrey</material>
+  </gazebo>
+
+  <joint name="azure_kinect_link_joint" type="fixed">
+    <parent link="top_structure"/>
+    <child link="azure_kinect_mount"/>
+    <origin xyz="0 0.15 0.625" rpy="0 0 0"/>
+  </joint>
+
+  <!-- Virtual camera frame (for test) -->
+	<joint name="camera_joint" type="fixed">
+		<origin xyz="0 0 0.67" rpy="0 ${0*3.14/180.0} 0" />
+		<parent link="top_structure" />
+		<child link="camera_link" />
+	</joint>
+	<link name="camera_link" />
+	<joint name="camera_rgb_joint" type="fixed">
+		<origin xyz="0.0 0.0 0.0" rpy="0 0 0" />
+		<parent link="camera_link" />
+		<child link="camera_rgb_frame" />
+	</joint>
+	<link name="camera_rgb_frame" />
+	<joint name="camera_rgb_optical_joint" type="fixed">
+		<origin xyz="0 0 0" rpy="-1.57 0 -1.57" />
+		<parent link="camera_rgb_frame" />
+		<child link="camera_rgb_optical_frame" />
+	</joint>
+	<link name="camera_rgb_optical_frame" />
+
+</robot>

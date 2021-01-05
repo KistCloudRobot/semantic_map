@@ -1,0 +1,32 @@
+<?xml version="1.0"?>
+<launch>
+	<arg name="x" default="0.0" />
+	<arg name="y" default="0.0" />
+	<arg name="z" default="0.0" />
+	<arg name="yaw" default="0.0" />
+  	<!-- <arg name="world_name" default="worlds/empty.world" /> -->
+	<arg name="world_name" default="$(find aws_robomaker_small_house_world)/worlds/test_world.world"/> 
+  	<!-- <arg name="world_name" default="$(find aws_robomaker_bookstore_world)/worlds/test_world small_house bookstore.world"/> -->
+
+	<!-- Run gazebo -->
+	<include file="$(find gazebo_ros)/launch/empty_world.launch">
+		<arg name="world_name" value="$(arg world_name)" />
+		<arg name="paused" value="false" />
+		<arg name="use_sim_time" value="true" />
+		<arg name="gui" value="true" />
+		<arg name="headless" value="false" />
+		<arg name="debug" value="false" />
+		<!-- <arg name="verbose" default="true"/> -->
+  </include>
+  
+  <include file="$(find smt_description)/launch/description.launch" />
+  
+  <!-- Create robot model -->
+  <node pkg="gazebo_ros" type="spawn_model" name="spawn_urdf" output="screen" args="-urdf 
+            -model jackal
+            -x $(arg x)
+            -y $(arg y)
+            -z $(arg z)
+            -Y $(arg yaw)
+            -param robot_description" />
+</launch>

@@ -1,0 +1,7 @@
+<launch>
+    <!-- Differential controller -->
+    <include file="$(find smt_jackal_control)/launch/control.launch" />
+
+    <!-- Teleoperation via joystick -->
+    <include file="$(find smt_jackal_control)/launch/teleop.launch" />
+</launch>
