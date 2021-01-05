@@ -1,0 +1,24 @@
+<?xml version="1.0"?>
+<package>
+  <name>smt_gazebo</name>
+  <version>1.0.0</version>
+  <description>Turtlebot3 Simulator bringup</description>
+  <maintainer email="hoyeon@todo.todo">hoyeon</maintainer>
+  <license>TODO</license>
+
+  <buildtool_depend>catkin</buildtool_depend>
+  <build_depend>roslaunch</build_depend>
+  <run_depend>controller_manager</run_depend>
+  <run_depend>gazebo_plugins</run_depend>
+  <run_depend>gazebo_ros</run_depend>
+  <run_depend>gazebo_ros_control</run_depend>
+  <run_depend>hector_gazebo_plugins</run_depend>
+  <run_depend>husky_control</run_depend>
+  <run_depend>husky_description</run_depend>
+  <run_depend>multimaster_launch</run_depend>
+  <run_depend>pointcloud_to_laserscan</run_depend>
+  <run_depend>rostopic</run_depend>
+
+  <export>
+  </export>
+</package>
